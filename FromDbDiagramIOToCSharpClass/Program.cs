@@ -15,18 +15,19 @@ namespace FromDbDiagramIOToCSharpClass
             {
                 if (fileLines[i].Trim().StartsWith("Table"))
                 {
+
                     List<String> newClass = new List<string>();
+                    String[] classDescriptors = fileLines[i].Trim().Split(' ');
+                    classDescriptors[1] = classDescriptors[1].Replace("{", "");
                     newClass.Add("using System;");
                     newClass.Add("");
                     newClass.Add("namespace " + def_namespace);
                     newClass.Add("{");
-                    String[] temp = fileLines[i].Trim().Split(' ');
-                    temp[1] = temp[1].Replace("{", "");
-                    newClass.Add("  class " + temp[1]);
+                    newClass.Add("  public class " + classDescriptors[1]);
                     newClass.Add("  {");
-
                     List<String> classFields=new List<string>();
-                    while (fileLines[i] != "}")
+                    i++; //skip table line
+                    while (fileLines[i] != "}") //until table "close"
                     {
                         
                         String[] variable_descriptors = fileLines[i].Trim().Split(" ");
@@ -46,16 +47,17 @@ namespace FromDbDiagramIOToCSharpClass
                                 type = "String";
                                 break;
                         }
-                        newClass.Add("      public "+type+variable_descriptors[0]+@" { get; set; }");
+                        newClass.Add("      public "+type+" "+variable_descriptors[0]+@" { get; set; }");
                         classFields.Add(variable_descriptors[0]);
                         i++;
                     }
                     newClass.Add("      public override string ToString()");
                     newClass.Add("      {");
                     newClass.Add("          return " +String.Join(" + \",\" + ",classFields)+";");
+                    newClass.Add("      }");
                     newClass.Add("  }");
                     newClass.Add("}");
-                    File.WriteAllLines(temp[1] + ".cs",newClass);
+                    File.WriteAllLines(classDescriptors[1] + ".cs",newClass);
                 }
             }
         }
