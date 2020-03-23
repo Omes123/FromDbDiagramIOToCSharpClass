@@ -1,0 +1,10 @@
+Table CodSiruta  {
+  Cod_Siruta int [pk,increment]
+  Denumire_unitate varchar
+  Cod_Judet int
+  Denumire_Judet varchar
+  Cod_UAT int
+  Nume_UAT varchar
+}
+
+
